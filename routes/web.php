@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ConverterController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -19,4 +20,19 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+// grupo de rotas protegidas pelo sistema de autorização
+Route::middleware(['auth'])->group(function () {
+    Route::get('/home', [App\Http\Controllers\ConverterController::class, 'index'])->name('home');
+
+    Route::get('/historico', function () {
+        return view('user.history');
+    })->name('historico');
+
+    Route::get('/admin', function () {
+        return view('admin.index');
+    })->name('admin');
+
+    Route::get('/conversor', [App\Http\Controllers\ConverterController::class, 'index'])->name('conversor');
+    Route::get('/conversao-erro', [App\Http\Controllers\ConversionController::class, 'error'])->name('conversao.erro');
+    Route::post('/converter', [App\Http\Controllers\ConversionController::class, 'executeConversion'])->name('converter');
+});
