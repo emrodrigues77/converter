@@ -2,14 +2,18 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable
-{
+/**
+ * Classe de modelagem dos dados dos usuários do sistema
+ *
+ * @author Eduardo Magela Rodrigues <emrodrigues77@gmail.com>
+ * @version 1.0
+ */
+class User extends Authenticatable {
     use HasApiTokens, HasFactory, Notifiable;
 
     /**
@@ -21,6 +25,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'admin',
     ];
 
     /**
@@ -41,4 +46,22 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    /**
+     * Indica se o usuário é um administrador
+     *
+     * @return bool
+     */
+    public function isAdmin() {
+        return $this->admin == 1;
+    }
+
+    /**
+     * Estabelece um relacionamento entre este modelo e o de conversões
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function conversions() {
+        return $this->hasMany(Conversion::class);
+    }
 }
